@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StateMachines;
+using System.Collections.Generic;
 using UnityEngine;
 
 /*****************************************************************************************************************************
@@ -89,7 +90,6 @@ public class AI : MonoBehaviour
     private AgentActions _agentActions;
 
 
-    // Use this for initialization
     void Start ()
     {
         // Initialise the accessable script components
@@ -97,11 +97,48 @@ public class AI : MonoBehaviour
         _agentActions = GetComponent<AgentActions>();
         _agentSenses = GetComponentInChildren<Sensing>();
         _agentInventory = GetComponentInChildren<InventoryController>();
+
+
+        stateMachine = new StateMachineController<AI>(this);
+        stateMachine.ChangeState(GotoEnemyBaseState.Instance); //Set the initial state of the AI Player
+
+
     }
 
-    // Update is called once per frame
+
+    public StateMachineController<AI> stateMachine { get; set; } //The state machine of this AI Player
+
+
     void Update ()
     {
-        // Run your AI code in here
+
+        stateMachine.UpdateState();  //Updates the current state that the state machine is in
+      Debug.Log(gameObject.name + " : " + stateMachine.currentState.ToString());
     }
+
+
+    #region Helper Functions to get Agent Data
+
+    public AgentData GetAgentData()
+    {
+        return _agentData;
+    }
+
+    public Sensing GetAgentSenses()
+    {
+        return _agentSenses;
+    }
+
+    public AgentActions GetAgentActions()
+    {
+        return _agentActions;
+    }
+
+    public InventoryController GetAgentInventory()
+    {
+        return _agentInventory;
+    }
+
+    #endregion
+
 }

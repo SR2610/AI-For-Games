@@ -10,9 +10,11 @@ using UnityEngine.UI;
 public class SetScore : MonoBehaviour
 {
     public GameObject EnemyFlag;
+    public GameObject FriendlyFlag;
     public int Score;
 
     private bool _enemyFlagInBase;
+    private bool _friendlyFlagInBase = true;
     private const float ScoreTickDuration = 1.0f;
 
     /// <summary>
@@ -27,6 +29,10 @@ public class SetScore : MonoBehaviour
             _enemyFlagInBase = true;
             StartCoroutine(UpdateScore());
         }
+        if (other.gameObject.name.Equals(FriendlyFlag.name))
+        {
+            _friendlyFlagInBase = true;
+        }
     }
 
     /// <summary>
@@ -39,6 +45,10 @@ public class SetScore : MonoBehaviour
         if (other.gameObject.name.Equals(EnemyFlag.name))
         {
             _enemyFlagInBase = false;
+        }
+        if (other.gameObject.name.Equals(FriendlyFlag.name))
+        {
+            _friendlyFlagInBase = false;
         }
     }
 
@@ -55,5 +65,17 @@ public class SetScore : MonoBehaviour
             yield return new WaitForSeconds(ScoreTickDuration);
             Score++;
         }
+    }
+
+    //This function is a public getter that was added in order to aid detection and be more resource efficent than doing checks on the AI script to detect if the flag is in their base
+    public bool IsEnemyFlagInBase()
+    {
+        return _enemyFlagInBase;
+    }
+
+    //This function is a public getter that was added in order to aid detection and be more resource efficent than doing checks on the AI script to detect if the friendly flag is in their base
+    public bool IsFriendlyFlagInBase()
+    {
+        return _friendlyFlagInBase;
     }
 }
