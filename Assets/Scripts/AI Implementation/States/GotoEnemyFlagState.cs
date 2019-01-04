@@ -1,7 +1,7 @@
 ﻿using StateMachines;
 using UnityEngine;
 
-public class GotoEnemyFlagState : State<AI>//State for traveling towards the enemy base
+public class GotoEnemyFlagState : State<AI>
 {
     #region State Instance
     private static GotoEnemyFlagState instance; //Static instance of the state
@@ -36,12 +36,14 @@ public class GotoEnemyFlagState : State<AI>//State for traveling towards the ene
 
     public override void UpdateState(AI owner)
     {
-        if (owner.GetAgentInventory().GetItem(Names.HealthKit)&&owner.GetAgentData().CurrentHitPoints / owner.GetAgentData().MaxHitPoints * 100 < AIConstants.HealThreshold) //If their health is low, they should try to save themselves
-            owner.stateMachine.ChangeState(HealState.Instance);
-
-        if (!owner.GetAgentData().EnemyBase.GetComponent<SetScore>().IsFriendlyFlagInBase()) //If the enemy flag is not in the enemy base anymore
+        if (owner.GetAgentInventory().GetItem(Names.HealthKit) && owner.GetAgentData().CurrentHitPoints / owner.GetAgentData().MaxHitPoints * 100 < AIConstants.HealThreshold) //If their health is low, they should try to save themselves
         {
-            owner.stateMachine.ChangeState(GoHomeState.Instance);
+            owner.StateMachine.ChangeState(HealState.Instance); //Try to heal
+        }
+
+        else if (!owner.GetAgentData().EnemyBase.GetComponent<SetScore>().IsFriendlyFlagInBase()) //If the enemy flag is not in the enemy base anymore
+        {
+            owner.StateMachine.ChangeState(GoHomeState.Instance); //Go home, as that is where the flag will be going, so get there ready to defend it
         }
         else
         {
@@ -52,11 +54,11 @@ public class GotoEnemyFlagState : State<AI>//State for traveling towards the ene
                 owner.GetAgentActions().MoveTo(flag); //Moves the agent towards the enemy flag
                 owner.GetAgentActions().CollectItem(flag); //Attempts to collect the flag if it is in range
                 if (owner.GetAgentInventory().HasItem(owner.GetAgentData().EnemyFlagName))
-                    owner.stateMachine.ChangeState(GoHomeState.Instance);
+                    owner.StateMachine.ChangeState(GoHomeState.Instance);
 
             }
-            else
-                owner.stateMachine.ChangeState(GotoEnemyBaseState.Instance);
+            else //If they cant see the flag, AND it is still in the base, they should look for it in the base
+                owner.StateMachine.ChangeState(GotoEnemyBaseState.Instance);
 
 
         }

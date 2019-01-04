@@ -58,7 +58,7 @@ public class AttackEnemyState : State<AI>
             }
         }
         else //If it can't see an enemy, fall back to the chasing state
-            owner.stateMachine.ChangeState(ChaseEnemyState.Instance);
+            owner.StateMachine.ChangeState(ChaseEnemyState.Instance);
 
     }
 }

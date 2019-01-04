@@ -38,9 +38,9 @@ public class ChaseEnemyState : State<AI>
 
     public override void UpdateState(AI owner)
     {
-    
-        if (owner.GetAgentInventory().GetItem(Names.HealthKit)&&owner.GetAgentData().CurrentHitPoints / owner.GetAgentData().MaxHitPoints * 100 < AIConstants.HealThreshold) //If their health is low, they should try to save themselves
-            owner.stateMachine.ChangeState(HealState.Instance);
+
+        if (owner.GetAgentInventory().GetItem(Names.HealthKit) && owner.GetAgentData().CurrentHitPoints / owner.GetAgentData().MaxHitPoints * 100 < AIConstants.HealThreshold) //If their health is low, they should try to save themselves
+            owner.StateMachine.ChangeState(HealState.Instance);
         else
         {
             if (owner.GetAgentSenses().GetEnemiesInView().Count > 0) //If they can still seen an enemy in their view
@@ -50,14 +50,14 @@ public class ChaseEnemyState : State<AI>
                 if (owner.GetAgentSenses().IsInAttackRange(enemy)) //If they are in attack range, they should try to attack
                 {
                     if (owner.GetAgentInventory().HasItem(Names.PowerUp)) //If they have a powerup, they should use it to ensure victory
-                        owner.stateMachine.ChangeState(UsePowerupState.Instance);
+                        owner.StateMachine.ChangeState(UsePowerupState.Instance);
                     else
-                        owner.stateMachine.ChangeState(AttackEnemyState.Instance); //If they don't they should just try to attack
+                        owner.StateMachine.ChangeState(AttackEnemyState.Instance); //If they don't they should just try to attack
 
                 }
             }
             else
-                owner.stateMachine.ChangeState(GoHomeState.Instance);
+                owner.StateMachine.ChangeState(GotoEnemyBaseState.Instance);
 
         }
     }

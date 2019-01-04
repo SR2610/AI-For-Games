@@ -27,15 +27,15 @@ public class UsePowerupState : State<AI> //Simple state to use the power up and 
 
     public override void EnterState(AI owner)
     {
-        owner.GetAgentActions().UseItem(owner.GetAgentInventory().GetItem(Names.PowerUp));
-        owner.stateMachine.ChangeState(AttackEnemyState.Instance);
+        owner.GetAgentActions().UseItem(owner.GetAgentInventory().GetItem(Names.PowerUp)); //Uses the power up item that is in the inventory
+        owner.StateMachine.ChangeState(AttackEnemyState.Instance); //Goes to the attacking state which is the only connection for this state
     }
 
-    public override void ExitState(AI owner)
+    public override void ExitState(AI owner) //Not Used
     {
     }
 
-    public override void UpdateState(AI owner)
+    public override void UpdateState(AI owner) //Not used as there is no continous logic in this state
     {
     }
 }

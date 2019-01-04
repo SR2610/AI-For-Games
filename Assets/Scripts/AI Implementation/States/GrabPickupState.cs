@@ -1,7 +1,7 @@
 ﻿using StateMachines;
 using UnityEngine;
 
-public class GrabPickupState : State<AI>
+public class GrabPickupState : State<AI> //Trys to grab a pickup when it was seen
 {
 
     #region State Instance
@@ -25,9 +25,11 @@ public class GrabPickupState : State<AI>
     }
     #endregion
 
+    State<AI> previousState;
+
     public override void EnterState(AI owner)
     {
-
+        previousState = owner.StateMachine.lastState; //Sets the last state that the main state machine was in, so it can be resumed
     }
 
     public override void ExitState(AI owner)
@@ -37,8 +39,8 @@ public class GrabPickupState : State<AI>
 
     public override void UpdateState(AI owner)
     {
-        GameObject pickup = owner.GetAgentSenses().GetObjectInViewByName(Names.PowerUp);
-        if (pickup == null)
+        GameObject pickup = owner.GetAgentSenses().GetObjectInViewByName(Names.PowerUp); //Checks if there is a power up in view
+        if (pickup == null) //If there is not a power up in view, it checks for a health kit instead
             pickup = owner.GetAgentSenses().GetObjectInViewByName(Names.HealthKit);
         if (pickup != null) //If they can see the pickup
         {
@@ -46,16 +48,14 @@ public class GrabPickupState : State<AI>
             owner.GetAgentActions().CollectItem(pickup); //Attempts to collect the pickup if it is in range
             if (owner.GetAgentInventory().HasItem(pickup.name))
             {
-                //If we don't have the enemy flag
-                owner.stateMachine.ChangeState(GotoEnemyBaseState.Instance);
-
-                //If we do
+                //If we now have the pickup   
+                owner.StateMachine.ChangeState(previousState);
             }
         }
         else
         {
             //no pickup, fall back into a state
-            owner.stateMachine.ChangeState(GotoEnemyBaseState.Instance);
+            owner.StateMachine.ChangeState(previousState);
         }
     }
 }

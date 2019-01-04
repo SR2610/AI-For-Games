@@ -1,7 +1,7 @@
 ﻿using StateMachines;
 using UnityEngine;
 
-public class HealState : State<AI>
+public class HealState : State<AI> //State for using the health kit if they have it on low health, or running away to avoid more damage
 {
 
     #region State Instance
@@ -28,7 +28,11 @@ public class HealState : State<AI>
 
     public override void EnterState(AI owner)
     {
-
+        if (owner.GetAgentInventory().GetItem(Names.HealthKit)) //If they have a health kit in their inventory
+        {
+            owner.GetAgentActions().UseItem(owner.GetAgentInventory().GetItem(Names.HealthKit)); //Use the health kit
+            owner.StateMachine.ChangeState(GotoEnemyBaseState.Instance); //Go back to attacking or chasing the enemy
+        }
     }
 
     public override void ExitState(AI owner)
@@ -37,26 +41,20 @@ public class HealState : State<AI>
 
     public override void UpdateState(AI owner)
     {
-        if (owner.GetAgentInventory().GetItem(Names.HealthKit)) //If they have a health kit in their inventory
-        {
-            owner.GetAgentActions().UseItem(owner.GetAgentInventory().GetItem(Names.HealthKit)); //Use the health kit
-            owner.stateMachine.ChangeState(ChaseEnemyState.Instance); //Go back to attacking
-        }
-        else
-        {
+     
             if (owner.GetAgentSenses().GetEnemiesInView().Count > 0) //If they can currently seen an enemy
             {
-                GameObject enemy = owner.GetAgentSenses().GetEnemiesInView()[0];
+                GameObject enemy = owner.GetAgentSenses().GetEnemiesInView()[0]; //Makes a reference to the enemy that was seen
 
-                if (Random.value < AIConstants.FleeChance)
-                    owner.stateMachine.ChangeState(GoHomeState.Instance);  //Try to flee the enemy
+                if (Random.value < AIConstants.FleeChance) //Do a random chance on fleeing from the enemy
+                    owner.StateMachine.ChangeState(GoHomeState.Instance);  //Try to flee the enemy
                 else
-                    owner.stateMachine.ChangeState(GotoEnemyBaseState.Instance); //If they can't go back to normal logic
+                    owner.StateMachine.ChangeState(GotoEnemyBaseState.Instance); //If they can't go back to normal logic
             }
             else
             {
-                owner.stateMachine.ChangeState(GotoEnemyBaseState.Instance); //If they can't go back to normal logic
+                owner.StateMachine.ChangeState(GotoEnemyBaseState.Instance); //If they can't go back to normal logic
             }
-        }
+        
     }
 }

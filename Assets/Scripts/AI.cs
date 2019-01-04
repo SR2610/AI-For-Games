@@ -1,5 +1,4 @@
 ﻿using StateMachines;
-using System.Collections.Generic;
 using UnityEngine;
 
 /*****************************************************************************************************************************
@@ -99,42 +98,39 @@ public class AI : MonoBehaviour
         _agentInventory = GetComponentInChildren<InventoryController>();
 
 
-        stateMachine = new StateMachineController<AI>(this);
-        stateMachine.ChangeState(GotoEnemyBaseState.Instance); //Set the initial state of the AI Player
+        StateMachine = new StateMachineController<AI>(this); //Creates a state machine for this AI Agent
+        StateMachine.ChangeState(GotoEnemyBaseState.Instance); //Set the initial state of the AI Player
 
 
     }
 
 
-    public StateMachineController<AI> stateMachine { get; set; } //The state machine of this AI Player
+    public StateMachineController<AI> StateMachine { get; set; } //The state machine of this AI Player
 
 
     void Update ()
-    {
-
-        stateMachine.UpdateState();  //Updates the current state that the state machine is in
-      Debug.Log(gameObject.name + " : " + stateMachine.currentState.ToString());
+    { StateMachine.UpdateState();  //Updates the current state that the state machine is in
     }
 
 
     #region Helper Functions to get Agent Data
 
-    public AgentData GetAgentData()
+    public AgentData GetAgentData() //Makes the Agent Data Publicly Acsessable so that it can be acsessed within the states
     {
         return _agentData;
     }
 
-    public Sensing GetAgentSenses()
+    public Sensing GetAgentSenses()//Makes the Agent Data Publicly Acsessable so that it can be acsessed within the states
     {
         return _agentSenses;
     }
 
-    public AgentActions GetAgentActions()
+    public AgentActions GetAgentActions()//Makes the Agent Data Publicly Acsessable so that it can be acsessed within the states
     {
         return _agentActions;
     }
 
-    public InventoryController GetAgentInventory()
+    public InventoryController GetAgentInventory()//Makes the Agent Data Publicly Acsessable so that it can be acsessed within the states
     {
         return _agentInventory;
     }
